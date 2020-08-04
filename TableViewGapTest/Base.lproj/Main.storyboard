@@ -755,6 +755,10 @@
                                                     </prototypeCellViews>
                                                 </tableColumn>
                                             </tableColumns>
+                                            <connections>
+                                                <outlet property="dataSource" destination="XfG-lQ-9wD" id="m4a-ui-kmC"/>
+                                                <outlet property="delegate" destination="XfG-lQ-9wD" id="RhR-5Z-dwZ"/>
+                                            </connections>
                                         </tableView>
                                     </subviews>
                                 </clipView>

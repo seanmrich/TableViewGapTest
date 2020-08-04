@@ -2,28 +2,29 @@ import Cocoa
 
 class ViewController: NSViewController {
     @IBOutlet var tableView: NSTableView?
-    private let mainSection = Section()
-    private var resultsDataSource: NSTableViewDiffableDataSourceReference<Section, LineResult>!
+    private let data = LineResult.stub
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureDatasource()
     }
+}
 
-    private func configureDatasource() {
-        guard let table = tableView else { return assertionFailure() }
-        resultsDataSource = NSTableViewDiffableDataSourceReference(tableView: table) { tableView, column, row, item in
-            guard let cell = tableView.makeView(withIdentifier: inlineCellIdentifier, owner: self) as? NSTableCellView else { preconditionFailure("Failed to create results cell") }
-            cell.textField?.stringValue = (item as? LineResult)?.displayString ?? ""
-            return cell
-        }
-        let snapshot = resultsDataSource.snapshot()
-        snapshot.appendSections(withIdentifiers: [mainSection])
-        snapshot.appendItems(withIdentifiers: LineResult.stub)
-        resultsDataSource.applySnapshot(snapshot, animatingDifferences: false)
+extension ViewController: NSTableViewDelegate {
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        guard let cell = tableView.makeView(withIdentifier: inlineCellIdentifier, owner: self) as? NSTableCellView else { preconditionFailure("Failed to create results cell") }
+        cell.textField?.stringValue = data[row].displayString ?? ""
+        return cell
     }
+}
 
-    final class Section {}
+extension ViewController: NSTableViewDataSource {
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        data.count
+    }
+    
+    func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
+        data[row]
+    }
 }
 
 private let inlineCellIdentifier = NSUserInterfaceItemIdentifier("InlineCell")
